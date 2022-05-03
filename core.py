@@ -1,3 +1,4 @@
+import math
 from telegram.ext import CallbackContext
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 import test, random
@@ -28,7 +29,7 @@ def add_player(update: Update, context: CallbackContext, players: list) -> None:
     }
     
     if player_in_list(new_player, players):
-        echo(context, update.effective_chat.id, new_player["name"] + " еблан")
+        return
     else:
         players.append(new_player)
         #test.create_players(players)
@@ -65,31 +66,15 @@ def send_roles(context: CallbackContext, players: list) -> None:
 
 
 def assign_roles(players: list) -> int:
-    num = len(players) 
-    l = 0
-    f = 0 
+    num = len(players)
+    if num > 10 or num < 5: return 0
+    
+    f = math.floor(num / 2)
 
-    match num:
-        case 5:
-            l = 3
-            f = 2
-        case 6:
-            l = 4
-            f = 2
-        case 7:
-            l = 4
-            f = 3
-        case 8:
-            l = 5
-            f = 3
-        case 9:
-            l = 5
-            f = 4
-        case 10:
-            l = 6
-            f = 4
-        case _:
-            return 0
+    if num % 2 != 1:
+        f -= 1
+
+    l = num - f
 
     randomize_roles(l, f, players)
     return 1

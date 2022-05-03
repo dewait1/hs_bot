@@ -3,7 +3,6 @@ import core, t
 from telegram import ReplyKeyboardRemove, Update
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters
 
-
 players = []
 
 # Logging enabling
@@ -20,11 +19,7 @@ def start(update: Update, context: CallbackContext) -> None:
     msg(update, context, "Cierć!")
 
 
-def new_game(update: Update, context: CallbackContext) -> None:
-    if update.effective_chat.type != 'group':
-        msg(update, context, 'Игра может быть начата только в групповом чате')
-        return
-        
+def new_game(update: Update, context: CallbackContext) -> None:    
     core.new_game(update, players)
 
 
@@ -36,9 +31,6 @@ def join_button(update: Update, context: CallbackContext) -> None:
 
 
 def start_game(update: Update, context: CallbackContext) -> None: 
-    if update.effective_chat.type != 'group':
-        return
-    
     if core.assign_roles(players) == 0:
         msg(update, context, "Неподходящее кол-во игроков")
         return
