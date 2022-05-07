@@ -1,5 +1,5 @@
 import logging
-import core, t
+import roles_mode, t, full_mode
 from telegram import ReplyKeyboardRemove, Update
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def msg(update: Update, context: CallbackContext, text: str) -> None:
     update.message.reply_markup = ReplyKeyboardRemove
-    core.echo(context, update.effective_chat.id, text)
+    roles_mode.echo(context, update.effective_chat.id, text)
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -20,22 +20,23 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def new_game(update: Update, context: CallbackContext) -> None:    
-    core.new_game(update, players)
+    roles_mode.new_game(update, players)
 
 
 def join_button(update: Update, context: CallbackContext) -> None:
     if update.callback_query.data == 'new_game':
-        core.add_player(update, context, players) 
+        roles_mode.add_player(update, context, players) 
     else:
-        core.send_role(update, context, players)
+        roles_mode.send_role(update, context, players)
 
 
 def start_game(update: Update, context: CallbackContext) -> None: 
-    if core.assign_roles(players) == 0:
+    if roles_mode.assign_roles(players) == 0:
         msg(update, context, "Неподходящее кол-во игроков")
         return
     
-    core.send_roles(context, players)
+    roles_mode.send_roles(context, players)
+    full_mode.send_roles_fascists(context, players)
 
     msg(update, context, "Игра началась!")
 
@@ -45,7 +46,7 @@ def show_button(update: Update, context: CallbackContext) -> None:
         msg(update, context, "Еблан?")
         return
 
-    core.show(update, players)
+    roles_mode.show(update, players)
 
 
 def main() -> None:
